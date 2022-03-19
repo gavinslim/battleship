@@ -23,6 +23,9 @@ const Gameboard = () => {
   };
 
   const isConflict = (xPos, yPos, length, horizontal = false) => {
+    if (horizontal && (xPos + length > 20)) { return true; }
+    if (!horizontal && (yPos + length > 20)) { return true; }
+
     for (let i = 0; i < length; i += 1) {
       if (horizontal) {
         if (board[xPos + i][yPos] === 1) {
@@ -37,9 +40,17 @@ const Gameboard = () => {
 
   const placeShip = (xPos, yPos, length, horizontal = false) => {
     // Check that input coordinates don't conflict with existing ship location
-    if (shipList.length !== 0) {
-      const repeat = shipList.some((ship) => ship.getLength() === length);
-      if (repeat === true) throw new Error('Ship with same length already exists');
+    // if (shipList.length !== 0) {
+    //   const repeat = shipList.some((ship) => ship.getLength() === length);
+    //   if (repeat === true) throw new Error('Ship with same length already exists');
+    // }
+
+    if (typeof (xPos) !== 'number' || typeof (yPos) !== 'number') {
+      throw new Error('Invalid coordinates - not a number');
+    }
+
+    if (xPos < 0 || yPos < 0) {
+      throw new Error('Invalid coordinates - no negative values');
     }
 
     // Check if ship placement conflicts with existing ships

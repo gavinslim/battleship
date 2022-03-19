@@ -17,10 +17,6 @@ describe('Placing ships', () => {
   test('Placing ship', () => {
     expect(board.placeShip(1, 2, ship.submarine)).toBe(true);
   });
-
-  test('Placing another ship with same length', () => {
-    expect(() => { board.placeShip(1, 2, ship.cruiser); }).toThrow(Error('Ship with same length already exists'));
-  });
 });
 
 describe('Receiving Attacks', () => {
