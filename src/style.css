@@ -1,0 +1,113 @@
+:root {
+  --primary-dark: #333;
+  --background-grey: #ededed;
+  --background-color: rgba(255, 255, 255, 0);
+  --grid-size: 20;
+  --cube-size: 30px;
+}
+
+body {
+  font-family: montserrat, sans-serif;
+  margin: 0px;
+  color: var(--primary-dark);
+  background-color: var(--background-grey);
+}
+
+#header {
+  /* border: 1px solid blue; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 70px;
+  height: 100px;
+}
+
+#main {
+  /* height: 100vh;  */
+  position: relative;
+}
+
+#grid-page {
+  /* border: 1px solid black; */
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  gap: 125px;
+  padding: 10px;
+}
+
+#grid-page .grid-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.grid-container .grid-container-title {
+  font-size: 28px;
+}
+
+.grid {
+  /* height: 100px; */
+  /* width: 100px; */
+  /* border: 1px solid black; */
+
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--cube-size));
+  grid-template-rows: repeat(var(--grid-size), var(--cube-size));
+
+  /* position: absolute; */
+  /* top: calc(50% - (var(--grid-size) * var(--cube-size))/2); */
+  /* left: calc(50% - (var(--grid-size) * var(--cube-size))/2); */
+
+}
+
+.cube {
+  width: var(--cube-size);
+  height: var(--cube-size);
+  border: 1px solid lightgray;
+  cursor: pointer;
+}
+
+.cube.active {
+  background-color: #333;
+}
+
+#overlay {
+  position: fixed;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#start {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);  /* Hidden */
+  z-index: 10;
+  background-color: var(--background-grey);
+
+  padding: 20px;
+  max-width: 80%;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+#start.active {
+  transform: translate(-50%, -50%) scale(1);
+}
