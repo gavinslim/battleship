@@ -17,22 +17,23 @@ const Ship = (length) => {
     (prev, curr) => prev * curr,
   ));
 
-  const rotate = () => {
-    horizontal = !horizontal;
+  const setHorizontal = (rotate) => {
+    if (rotate) horizontal = true;
+    else horizontal = false;
   };
 
   const display = () => ({ horizontal, body });
 
-  const setCoordinate = (input) => {
-    if (typeof (input.x) !== 'number' || typeof (input.y) !== 'number') {
+  const setCoordinate = (xPos, yPos) => {
+    if (typeof (xPos) !== 'number' || typeof (yPos) !== 'number') {
       throw new Error('Invalid coordinates - not a number');
     }
 
-    if (input.x < 0 || input.y < 0) {
+    if (xPos < 0 || yPos < 0) {
       throw new Error('Invalid coordinates - no negative values');
     }
-    coordinate.x = input.x;
-    coordinate.y = input.y;
+    coordinate.x = xPos;
+    coordinate.y = yPos;
   };
 
   const getCoordinate = () => coordinate;
@@ -43,7 +44,7 @@ const Ship = (length) => {
     hit,
     isSunk,
     display,
-    rotate,
+    setHorizontal,
     setCoordinate,
     getCoordinate,
     getLength,

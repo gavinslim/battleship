@@ -8,6 +8,12 @@ const Gameboard = () => {
   const missedList = [];
   const hitList = [];
 
+  // Initialize board as 2D array
+  const board = [];
+  for (let row = 0; row < size; row += 1) {
+    board[row] = new Array(size).fill(0);
+  }
+
   const getBoardSize = () => size;
 
   const isBoardFull = () => {
@@ -16,21 +22,56 @@ const Gameboard = () => {
     return false;
   };
 
-  const placeShip = (input, length) => {
+  const isConflict = (xPos, yPos, length, horizontal = false) => {
+    for (let i = 0; i < length; i += 1) {
+      if (horizontal) {
+        if (board[xPos + i][yPos] === 1) {
+          return true;
+        }
+      } else if (board[xPos][yPos + i] === 1) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const placeShip = (xPos, yPos, length, horizontal = false) => {
+    // Check that input coordinates don't conflict with existing ship location
     if (shipList.length !== 0) {
       const repeat = shipList.some((ship) => ship.getLength() === length);
       if (repeat === true) throw new Error('Ship with same length already exists');
     }
 
+    // Check if ship placement conflicts with existing ships
+    if (isConflict(xPos, yPos, length, horizontal)) { return false; }
+
+    // Initialize ship
     const ship = Ship(length);
-    ship.setCoordinate(input);
+    ship.setHorizontal(horizontal);
+    ship.setCoordinate(xPos, yPos);
+
+    // Place ship on board
+    for (let i = 0; i < length; i += 1) {
+      if (horizontal) {
+        board[xPos + i][yPos] = 1;
+      } else {
+        board[xPos][yPos + i] = 1;
+      }
+    }
+
     shipList.push(ship);
     return true;
   };
 
-  const alreadyHit = (input) => {
-    const missedFound = missedList.some((miss) => (miss.x === input.x) && (miss.y === input.y));
-    const hitFound = hitList.some((hits) => (hits.x === input.x) && (hits.y === input.y));
+  // Print out ships
+  const displayShips = () => shipList.forEach((ship) => {
+    console.log(ship.getCoordinate(), `Length: ${ship.getLength()}`);
+  });
+
+  // Check if position has already been hit
+  const alreadyHit = (xPos, yPos) => {
+    const missedFound = missedList.some((miss) => (miss.x === xPos) && (miss.y === yPos));
+    const hitFound = hitList.some((hits) => (hits.x === xPos) && (hits.y === yPos));
 
     if (missedFound || hitFound) {
       return true;
@@ -38,7 +79,8 @@ const Gameboard = () => {
     return false;
   };
 
-  const receiveAttack = (input) => {
+  // Receive attack at position
+  const receiveAttack = (xPos, yPos) => {
     let isValid = false;
     const between = (x, min, max) => (x >= min && x <= max);
 
@@ -51,18 +93,18 @@ const Gameboard = () => {
       const max = ship.isHorizontal()
         ? { x: min.x + length - 1, y: min.y } : { x: min.x, y: min.y + length - 1 };
 
-      if (between(input.x, min.x, max.x) && between(input.y, min.y, max.y)) {
-        hitList.push(input);
+      if (between(xPos, min.x, max.x) && between(yPos, min.y, max.y)) {
+        hitList.push({ x: xPos, y: yPos });
         if (ship.isHorizontal() === true) {
-          ship.hit(input.x - min.x);
+          ship.hit(xPos - min.x);
         } else {
-          ship.hit(input.y - min.y);
+          ship.hit(yPos - min.y);
         }
         isValid = true;
       }
     });
 
-    if (!isValid) { missedList.push(input); }
+    if (!isValid) { missedList.push({ x: xPos, y: yPos }); }
     return isValid;
   };
 
@@ -71,15 +113,18 @@ const Gameboard = () => {
   };
 
   const isShipListEmpty = () => {
-    if (shipList.length !== 0) return false;
-    return true;
+    let isEmpty = true;
+    if (shipList.length !== 0) isEmpty = false;
+    return isEmpty;
   };
 
   const checkAllShipsSunk = () => !(shipList.find((ship) => ship.isSunk() === false));
 
   return {
+    displayShips,
     getBoardSize,
     isBoardFull,
+    isConflict,
     placeShip,
     alreadyHit,
     receiveAttack,

@@ -1,37 +1,27 @@
-const gameboardFuncs = require('./gameboard');
-
-const { Gameboard } = gameboardFuncs;
-
 const Player = () => {
-  const board = Gameboard();
-
   const attack = (opponentBoard, posX, posY) => {
-    if (opponentBoard.alreadyHit({ x: posX, y: posY })) {
-      return false;
-    }
-
-    opponentBoard.receiveAttack({ x: posX, y: posY });
-    return true;
+    if (opponentBoard.alreadyHit(posX, posY)) { return false; }
+    if (opponentBoard.receiveAttack(posX, posY)) { return true; }
+    return false;
   };
 
+  // Randomly target a spot
   const randomAttack = (opponentBoard) => {
-    // Randomly target a spot
     let posX;
     let posY;
 
+    // Check there are still spots to hit
     do {
-      // Check there are still spots to hit
       if (opponentBoard.isBoardFull()) return false;
       posX = Math.floor(Math.random() * opponentBoard.getBoardSize());
       posY = Math.floor(Math.random() * opponentBoard.getBoardSize());
-    } while (opponentBoard.alreadyHit({ x: posX, y: posY }));
+    } while (opponentBoard.alreadyHit(posX, posY));
 
     opponentBoard.receiveAttack({ x: posX, y: posY });
     return true;
   };
 
   return {
-    board,
     attack,
     randomAttack,
   };
