@@ -1,33 +1,36 @@
-const playerFuncs = require('./player');
+const { Player } = require('./player');
+const { Gameboard } = require('./gameboard');
 
-const { Player } = playerFuncs;
-
+// Initialize Players and Gameboards
 const p1 = Player();
 const p2 = Player();
 
+const board1 = Gameboard();
+const board2 = Gameboard();
+
 const ship = {
-  carrier: 5,
-  battleship: 4,
-  cruiser: 3,
-  submarine: 3,
   destroyer: 2,
+  submarine: 3,
+  cruiser: 3,
+  battleship: 4,
+  carrier: 5,
 };
 
-// Ship list for initial placement
-const initialShipList = [
-  ship.carrier,
-  ship.battleship,
-  ship.cruiser,
-  ship.submarine,
-  ship.destroyer,
+// Ships to be placed on player 1's board
+const shipyard = [
+  { length: ship.destroyer, horizontal: true },
+  { length: ship.submarine, horizontal: true },
+  { length: ship.cruiser, horizontal: true },
+  { length: ship.battleship, horizontal: true },
+  { length: ship.carrier, horizontal: true },
 ];
 
 function getCubeCoordinate(doc) {
   const childID = doc.getAttribute('data-key');
   const regex = /x([0-9]+)-y([0-9]+)/;
   const results = {
-    x: regex.exec(childID)[1],
-    y: regex.exec(childID)[2],
+    x: parseInt(regex.exec(childID)[1], 10),
+    y: parseInt(regex.exec(childID)[2], 10),
   };
 
   return results;
@@ -39,8 +42,8 @@ function mouseClick() {
 
   const regex = /x([0-9]+)-y([0-9]+)/;
   const results = {
-    x: regex.exec(childID)[1],
-    y: regex.exec(childID)[2],
+    x: parseInt(regex.exec(childID)[1], 10),
+    y: parseInt(regex.exec(childID)[2], 10),
   };
 
   const gridNode = document.querySelector(`#${parentID}`);
@@ -51,7 +54,7 @@ function mouseClick() {
 }
 
 // Add grid functions
-function addGridPlayFeature() {
+function runGame() {
   const grids = document.querySelectorAll('.grid');
   grids.forEach((grid) => {
     if (grid.getAttribute('id') !== 'start-grid') {
@@ -63,22 +66,79 @@ function addGridPlayFeature() {
   });
 }
 
+function getCoordinateRange(currCoordinate) {
+  const currentShip = shipyard[shipyard.length - 1];
+  const xmax = currentShip.horizontal
+    ? parseInt(currCoordinate.x, 10) + parseInt(currentShip.length, 10)
+    : parseInt(currCoordinate.x, 10);
+
+  const ymax = currentShip.horizontal
+    ? parseInt(currCoordinate.y, 10)
+    : parseInt(currCoordinate.y, 10) + parseInt(currentShip.length, 10);
+
+  return {
+    x: xmax,
+    y: ymax,
+  };
+}
+
+const between = (x, min, max) => (x >= min && x <= max);
+
 function displayShip() {
-  if (initialShipList.length === 0) { return; }
+  if (shipyard.length === 0) { return; }
   const coordinate = getCubeCoordinate(this);
-  console.log(initialShipList.length, initialShipList[initialShipList.length - 1]);
+  const range = getCoordinateRange(coordinate);
+
+  const parentID = this.parentNode.getAttribute('id');
+  const gridNode = document.querySelector(`#${parentID}`);
+  gridNode.childNodes.forEach((cube) => {
+    const dataKey = cube.getAttribute('data-key');
+    const regex = /x([0-9]+)-y([0-9]+)/;
+    const results = {
+      x: parseInt(regex.exec(dataKey)[1], 10),
+      y: parseInt(regex.exec(dataKey)[2], 10),
+    };
+
+    if (between(results.x, coordinate.x, range.x) && between(results.y, coordinate.y, range.y)) {
+      cube.classList.add('active');
+      // console.log(coordinate, range.x, range.y, currentShip.length, currentShip.horizontal);
+    } else {
+      cube.classList.remove('active');
+    }
+  });
 }
 
 function placeShip() {
-  if (initialShipList.length === 0) { return; }
+  if (shipyard.length === 0) { return; }
+  const currentShip = shipyard[shipyard.length - 1];
   const coordinate = getCubeCoordinate(this);
-  // console.log(`Click! ${coordinate.x}, ${coordinate.y}`);
-  // p1.board.placeShip({ x: coordinate.x, y: coordinate.y }, ship.destroyer);
-  initialShipList.pop();
+
+  const isConflicted = board1.isConflict(
+    coordinate.x,
+    coordinate.y,
+    currentShip.length,
+    currentShip.horizontal,
+  );
+
+  if (!isConflicted) {
+    console.log(`Click! [x: ${coordinate.x}, y: ${coordinate.y}], Length: ${currentShip.length}`);
+    // board1.placeShip({ x: coordinate.x, y: coordinate.y }, ship.destroyer);
+    shipyard.pop();
+  }
+}
+
+function addRotateFeature() {
+  const button = document.querySelector('#rotate-button');
+  button.addEventListener('click', () => {
+    const currentShip = shipyard[shipyard.length - 1];
+    currentShip.horizontal = !currentShip.horizontal;
+  });
 }
 
 // Add start functions for initial ship placement
-function addGridPlacementFeature() {
+function runSetup() {
+  addRotateFeature();
+
   const grid = document.querySelector('#start-grid');
   const cubes = grid.childNodes;
   cubes.forEach((cube) => {
@@ -88,8 +148,8 @@ function addGridPlacementFeature() {
 }
 
 function loadFeatures() {
-  addGridPlayFeature();
-  addGridPlacementFeature();
+  runGame();
+  runSetup();
 }
 
 export default loadFeatures;
