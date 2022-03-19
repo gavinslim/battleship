@@ -78,7 +78,7 @@ describe('Hit and Display', () => {
 describe('Rotate', () => {
   test('Rotate once', () => {
     const ship = Ship(3);
-    ship.rotate();
+    ship.setHorizontal(true);
     expect(ship.display()).toStrictEqual({
       horizontal: true,
       body: [0, 0, 0],
@@ -87,8 +87,8 @@ describe('Rotate', () => {
 
   test('Rotate twice', () => {
     const ship = Ship(3);
-    ship.rotate();
-    ship.rotate();
+    ship.setHorizontal(true);
+    ship.setHorizontal(false);
     expect(ship.display()).toStrictEqual({
       horizontal: false,
       body: [0, 0, 0],
@@ -99,19 +99,19 @@ describe('Rotate', () => {
 describe('Coordinate', () => {
   test('Set coordinate (0,0)', () => {
     const ship = Ship(3);
-    ship.setCoordinate({ x: 0, y: 0 });
+    ship.setCoordinate(0, 0);
     expect(ship.getCoordinate()).toStrictEqual({ x: 0, y: 0 });
   });
 
   test('Set coordinate (300,300)', () => {
     const ship = Ship(3);
-    ship.setCoordinate({ x: 300, y: 300 });
+    ship.setCoordinate(300, 300);
     expect(ship.getCoordinate()).toStrictEqual({ x: 300, y: 300 });
   });
 
   test('Set coordinate (-1, 1)', () => {
     const ship = Ship(3);
-    expect(() => { ship.setCoordinate({ x: -1, y: 1 }); }).toThrow(Error('Invalid coordinates - no negative values'));
+    expect(() => { ship.setCoordinate(-1, 1); }).toThrow(Error('Invalid coordinates - no negative values'));
   });
 
   test('Set non-num cordinates', () => {
