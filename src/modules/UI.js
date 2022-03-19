@@ -16,8 +16,8 @@ function generateGrid(title, id) {
   grid.classList.add('grid');
   grid.setAttribute('id', id);
 
-  for (let x = 0; x < gridSize; x += 1) {
-    for (let y = 0; y < gridSize; y += 1) {
+  for (let y = 0; y < gridSize; y += 1) {
+    for (let x = 0; x < gridSize; x += 1) {
       const cube = document.createElement('div');
       cube.setAttribute('data-key', `x${x}-y${y}`);
       cube.classList.add('cube');
@@ -69,6 +69,12 @@ function loadStartPage() {
 
   // Add grid
   start.appendChild(generateGrid('', 'start-grid'));
+
+  // Add rotate button
+  const button = document.createElement('button');
+  button.setAttribute('id', 'rotate-button');
+  start.appendChild(button);
+
   content.appendChild(start);
 }
 
