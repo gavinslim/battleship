@@ -2,12 +2,12 @@
   --primary-dark: #333;
   --background-grey: #ededed;
   --background-color: rgba(255, 255, 255, 0);
-  --grid-size: 20;
+  --grid-size: 16;
   --cube-size: 30px;
 }
 
 body {
-  font-family: montserrat, sans-serif;
+  font-family: 'Poppins';
   margin: 0px;
   color: var(--primary-dark);
   background-color: var(--background-grey);
@@ -20,6 +20,8 @@ body {
   align-items: center;
   font-size: 70px;
   height: 100px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
 }
 
 #main {
@@ -55,8 +57,8 @@ body {
   /* border: 1px solid black; */
 
   display: grid;
-  grid-template-columns: repeat(var(--grid-size), var(--cube-size));
-  grid-template-rows: repeat(var(--grid-size), var(--cube-size));
+  grid-template-columns: repeat(calc(var(--grid-size) + 1), var(--cube-size));
+  grid-template-rows: repeat(calc(var(--grid-size) + 1), var(--cube-size));
 
   /* position: absolute; */
   /* top: calc(50% - (var(--grid-size) * var(--cube-size))/2); */
@@ -69,10 +71,28 @@ body {
   height: var(--cube-size);
   border: 1px solid lightgray;
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.cube.active {
+.cube.miss {
+  background-color: lightgray;
+  border: 1px solid transparent;
+  z-index: 1;
+}
+
+.cube.set {
   background-color: #333;
+  border: 1px solid #333;
+  z-index: 1;
+}
+
+.cube.hit {
+  background-color: red;
+  border: 1px solid red;
+  z-index: 2;
 }
 
 #overlay {
@@ -105,9 +125,24 @@ body {
 
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
   cursor: pointer;
 }
 
 #start.active {
   transform: translate(-50%, -50%) scale(1);
+}
+
+#rotate-button {
+  width: 90px;
+  height: 40px;
+  /* background-color: #lightgrey; */
+}
+
+.label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
