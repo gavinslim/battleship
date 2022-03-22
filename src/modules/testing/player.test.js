@@ -56,7 +56,7 @@ describe('Attack Group Randomly', () => {
   });
 
   test('Keep attacking until full', () => {
-    for (let i = 0; i < 20 * 20; i += 1) {
+    for (let i = 0; i < 16 * 16; i += 1) {
       expect(p2.randomAttack(board1)).toBe(true);
     }
   });
