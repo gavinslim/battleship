@@ -3,7 +3,7 @@ const myFunctions = require('./ship');
 const { Ship } = myFunctions;
 
 const Gameboard = () => {
-  const size = 20;
+  const size = 16;
   const shipList = [];
   const missedList = [];
   const hitList = [];
@@ -14,6 +14,8 @@ const Gameboard = () => {
     board[row] = new Array(size).fill(0);
   }
 
+  const getMissedList = () => missedList;
+  const getHitList = () => hitList;
   const getBoardSize = () => size;
 
   const isBoardFull = () => {
@@ -23,8 +25,8 @@ const Gameboard = () => {
   };
 
   const isConflict = (xPos, yPos, length, horizontal = false) => {
-    if (horizontal && (xPos + length > 20)) { return true; }
-    if (!horizontal && (yPos + length > 20)) { return true; }
+    if (horizontal && (xPos + length > size)) { return true; }
+    if (!horizontal && (yPos + length > size)) { return true; }
 
     for (let i = 0; i < length; i += 1) {
       if (horizontal) {
@@ -40,11 +42,6 @@ const Gameboard = () => {
 
   const placeShip = (xPos, yPos, length, horizontal = false) => {
     // Check that input coordinates don't conflict with existing ship location
-    // if (shipList.length !== 0) {
-    //   const repeat = shipList.some((ship) => ship.getLength() === length);
-    //   if (repeat === true) throw new Error('Ship with same length already exists');
-    // }
-
     if (typeof (xPos) !== 'number' || typeof (yPos) !== 'number') {
       throw new Error('Invalid coordinates - not a number');
     }
@@ -116,6 +113,7 @@ const Gameboard = () => {
     });
 
     if (!isValid) { missedList.push({ x: xPos, y: yPos }); }
+    // console.log(missedList);
     return isValid;
   };
 
@@ -142,6 +140,8 @@ const Gameboard = () => {
     emptyShipList,
     isShipListEmpty,
     checkAllShipsSunk,
+    getMissedList,
+    getHitList,
   };
 };
 

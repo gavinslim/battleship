@@ -1,7 +1,7 @@
 import loadFeatures from './features';
 
 const content = document.querySelector('.content');
-const gridSize = 20;
+const gridSize = 16;
 
 function generateGrid(title, id) {
   const gridContainer = document.createElement('div');
@@ -16,12 +16,34 @@ function generateGrid(title, id) {
   grid.classList.add('grid');
   grid.setAttribute('id', id);
 
-  for (let y = 0; y < gridSize; y += 1) {
-    for (let x = 0; x < gridSize; x += 1) {
-      const cube = document.createElement('div');
-      cube.setAttribute('data-key', `x${x}-y${y}`);
-      cube.classList.add('cube');
-      grid.appendChild(cube);
+  // for (let i = 0; i < gridSize; i += 1) {
+  //   const row = document.createElement('div');
+  //   row.textContent = i;
+  //   grid.appendChild(row);
+  // }
+
+  for (let y = -1; y < gridSize; y += 1) {
+    for (let x = -1; x < gridSize; x += 1) {
+      if (x === -1 && y === -1) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        grid.appendChild(label);
+      } else if (x !== -1 && y === -1) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.textContent = x;
+        grid.appendChild(label);
+      } else if (x === -1 && y !== -1) {
+        const label = document.createElement('div');
+        label.classList.add('label');
+        label.textContent = y;
+        grid.appendChild(label);
+      } else {
+        const cube = document.createElement('div');
+        cube.setAttribute('data-key', `x${x}-y${y}`);
+        cube.classList.add('cube');
+        grid.appendChild(cube);
+      }
     }
   }
   gridContainer.appendChild(grid);
@@ -33,8 +55,8 @@ function addGridPage() {
   const gridPage = document.createElement('div');
   gridPage.setAttribute('id', 'grid-page');
 
-  gridPage.appendChild(generateGrid('Player 1', 'player1-grid'));
-  gridPage.appendChild(generateGrid('Player 2', 'player2-grid'));
+  gridPage.appendChild(generateGrid('Player', 'player1-grid'));
+  gridPage.appendChild(generateGrid('Computer', 'computer-grid'));
 
   return gridPage;
 }
@@ -73,6 +95,7 @@ function loadStartPage() {
   // Add rotate button
   const button = document.createElement('button');
   button.setAttribute('id', 'rotate-button');
+  button.textContent = 'Rotate';
   start.appendChild(button);
 
   content.appendChild(start);

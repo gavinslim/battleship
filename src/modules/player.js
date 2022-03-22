@@ -1,7 +1,10 @@
 const Player = () => {
   const attack = (opponentBoard, posX, posY) => {
-    if (opponentBoard.alreadyHit(posX, posY)) { return false; }
-    if (opponentBoard.receiveAttack(posX, posY)) { return true; }
+    if (!opponentBoard.alreadyHit(posX, posY)) {
+      if (opponentBoard.receiveAttack(posX, posY)) {
+        return true;
+      }
+    }
     return false;
   };
 
@@ -17,7 +20,8 @@ const Player = () => {
       posY = Math.floor(Math.random() * opponentBoard.getBoardSize());
     } while (opponentBoard.alreadyHit(posX, posY));
 
-    opponentBoard.receiveAttack({ x: posX, y: posY });
+    // console.log(`Computer hit: ${posX} ${posY}`);
+    opponentBoard.receiveAttack(posX, posY);
     return true;
   };
 
