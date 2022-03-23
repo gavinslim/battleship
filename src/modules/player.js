@@ -20,7 +20,6 @@ const Player = () => {
       posY = Math.floor(Math.random() * opponentBoard.getBoardSize());
     } while (opponentBoard.alreadyHit(posX, posY));
 
-    // console.log(`Computer hit: ${posX} ${posY}`);
     opponentBoard.receiveAttack(posX, posY);
     return true;
   };

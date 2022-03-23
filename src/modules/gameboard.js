@@ -1,32 +1,31 @@
-const myFunctions = require('./ship');
-
-const { Ship } = myFunctions;
+const { Ship } = require('./ship');
+const { Global } = require('./globals');
 
 const Gameboard = () => {
-  const size = 16;
+  const { boardSize } = Global();
   const shipList = [];
   const missedList = [];
   const hitList = [];
 
   // Initialize board as 2D array
   const board = [];
-  for (let row = 0; row < size; row += 1) {
-    board[row] = new Array(size).fill(0);
+  for (let row = 0; row < boardSize; row += 1) {
+    board[row] = new Array(boardSize).fill(0);
   }
 
   const getMissedList = () => missedList;
   const getHitList = () => hitList;
-  const getBoardSize = () => size;
+  const getBoardSize = () => boardSize;
 
   const isBoardFull = () => {
     const totalHits = missedList.length + hitList.length;
-    if (totalHits === size * size) return true;
+    if (totalHits === boardSize * boardSize) return true;
     return false;
   };
 
   const isConflict = (xPos, yPos, length, horizontal = false) => {
-    if (horizontal && (xPos + length > size)) { return true; }
-    if (!horizontal && (yPos + length > size)) { return true; }
+    if (horizontal && (xPos + length > boardSize)) { return true; }
+    if (!horizontal && (yPos + length > boardSize)) { return true; }
 
     for (let i = 0; i < length; i += 1) {
       if (horizontal) {
@@ -113,7 +112,6 @@ const Gameboard = () => {
     });
 
     if (!isValid) { missedList.push({ x: xPos, y: yPos }); }
-    // console.log(missedList);
     return isValid;
   };
 

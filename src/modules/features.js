@@ -1,5 +1,6 @@
 const { Player } = require('./player');
 const { Gameboard } = require('./gameboard');
+const { Global } = require('./globals');
 
 // Initialize Players and Gameboards
 const p1 = Player();
@@ -8,24 +9,25 @@ const p2 = Player();
 const board1 = Gameboard();
 const board2 = Gameboard();
 
-// const playerTurn = 1;
+const { shipyard } = Global();
+// const { shipyard } = Global();
 
-const ship = {
-  destroyer: 2,
-  submarine: 3,
-  cruiser: 3,
-  battleship: 4,
-  carrier: 5,
-};
+// const ship = {
+//   destroyer: 2,
+//   submarine: 3,
+//   cruiser: 3,
+//   battleship: 4,
+//   carrier: 5,
+// };
 
 // Ships to be placed on player 1's board
-const shipyard = [
-  { length: ship.destroyer, horizontal: true },
-  { length: ship.submarine, horizontal: true },
-  { length: ship.cruiser, horizontal: true },
-  { length: ship.battleship, horizontal: true },
-  { length: ship.carrier, horizontal: true },
-];
+// const shipyard = [
+//   { length: ship.destroyer, horizontal: true },
+//   { length: ship.submarine, horizontal: true },
+//   { length: ship.cruiser, horizontal: true },
+//   { length: ship.battleship, horizontal: true },
+//   { length: ship.carrier, horizontal: true },
+// ];
 
 function getCubeCoordinate(doc) {
   const childID = doc.getAttribute('data-key');
@@ -37,15 +39,14 @@ function getCubeCoordinate(doc) {
   return results;
 }
 
-function refreshGrid(board) {
+function refreshGrid(board, id) {
   const missedList = board.getMissedList();
   const hitList = board.getHitList();
-  console.log(hitList);
 
   missedList.forEach((miss) => {
     const cubes = document.querySelectorAll(`div[data-key="x${miss.x}-y${miss.y}"]`);
     cubes.forEach((cube) => {
-      if (cube.parentNode.getAttribute('id') === 'player1-grid') {
+      if (cube.parentNode.getAttribute('id') === id) {
         cube.classList.add('miss');
       }
     });
@@ -54,49 +55,29 @@ function refreshGrid(board) {
   hitList.forEach((hit) => {
     const cubes = document.querySelectorAll(`div[data-key="x${hit.x}-y${hit.y}"]`);
     cubes.forEach((cube) => {
-      if (cube.parentNode.getAttribute('id') === 'player1-grid') {
+      if (cube.parentNode.getAttribute('id') === id) {
         cube.classList.add('hit');
-        // cube.classList.add('set');
       }
     });
   });
 }
 
 function mouseClick() {
-  const childID = this.getAttribute('data-key');
-  const parentID = this.parentNode.getAttribute('id');
+  const clickedCube = this.getAttribute('data-key');
 
   const regex = /x([0-9]+)-y([0-9]+)/;
   const results = {
-    x: parseInt(regex.exec(childID)[1], 10),
-    y: parseInt(regex.exec(childID)[2], 10),
+    x: parseInt(regex.exec(clickedCube)[1], 10),
+    y: parseInt(regex.exec(clickedCube)[2], 10),
   };
 
-  const gridNode = document.querySelector(`#${parentID}`);
-  const cubeNode = gridNode.querySelector(`div[data-key="${childID}"]`);
-
-  // Ignore click if previously clicked
-  // if (cubeNode.classList.contains('hit') || cubeNode.classList.contains('miss')) {
-  //   return;
-  // }
-
-  if (board2.alreadyHit(results.x, results.y)) {
-    return;
+  if (!board2.alreadyHit(results.x, results.y)) {
+    p1.attack(board2, results.x, results.y);
+    p2.randomAttack(board1);
   }
 
-  if (p1.attack(board2, results.x, results.y)) {
-    cubeNode.classList.add('hit');
-    // console.log('Hit!');
-  } else {
-    cubeNode.classList.add('miss');
-    // console.log('Miss!');
-  }
-
-  if (!p2.randomAttack(board1)) {
-    console.log('No more option!');
-  }
-
-  refreshGrid(board1);
+  refreshGrid(board2, 'computer-grid');
+  refreshGrid(board1, 'player-grid');
 }
 
 // Add grid functions
@@ -106,12 +87,15 @@ function runGame() {
     if (grid.getAttribute('id') === 'computer-grid') {
       const cubes = grid.childNodes;
       cubes.forEach((cube) => {
-        cube.addEventListener('click', mouseClick, false);
+        if (!(cube.classList.contains('label'))) {
+          cube.addEventListener('click', mouseClick, false);
+        }
       });
     }
   });
 }
 
+// Display ship during ship placement phase
 function displayShip() {
   if (shipyard.length === 0) { return; }
   const coordinate = getCubeCoordinate(this);
@@ -192,16 +176,16 @@ function placeShips() {
       });
     }
 
-    // Place ship on Player 1 board
+    // Place ship on Player and Computer board
     board1.placeShip(coordinate.x, coordinate.y, currentShip.length, currentShip.horizontal);
-    shipyard.pop();
 
     // Place ship on Computer board randomly
     const compCoord = generateRandomCoord(currentShip);
-    console.log(compCoord.x, compCoord.y, compCoord.horizontal);
     board2.placeShip(compCoord.x, compCoord.y, currentShip.length, compCoord.horizontal);
 
-    // Remove UI once all Player 1 ships are placed
+    shipyard.pop();
+
+    // Remove UI once all Player ships are placed
     if (shipyard.length === 0) {
       const overlay = document.querySelector('#overlay');
       const start = document.querySelector('#start');

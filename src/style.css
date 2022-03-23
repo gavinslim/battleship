@@ -2,7 +2,7 @@
   --primary-dark: #333;
   --background-grey: #ededed;
   --background-color: rgba(255, 255, 255, 0);
-  --grid-size: 16;
+  --grid-size: 20;
   --cube-size: 30px;
 }
 
@@ -52,18 +52,9 @@ body {
 }
 
 .grid {
-  /* height: 100px; */
-  /* width: 100px; */
-  /* border: 1px solid black; */
-
   display: grid;
   grid-template-columns: repeat(calc(var(--grid-size) + 1), var(--cube-size));
   grid-template-rows: repeat(calc(var(--grid-size) + 1), var(--cube-size));
-
-  /* position: absolute; */
-  /* top: calc(50% - (var(--grid-size) * var(--cube-size))/2); */
-  /* left: calc(50% - (var(--grid-size) * var(--cube-size))/2); */
-
 }
 
 .cube {
@@ -86,7 +77,7 @@ body {
 .cube.set {
   background-color: #333;
   border: 1px solid #333;
-  z-index: 1;
+  z-index: 2;
 }
 
 .cube.hit {

@@ -1,7 +1,12 @@
 import loadFeatures from './features';
 
+const { Global } = require('./globals');
+
+const { boardSize } = Global();
+
 const content = document.querySelector('.content');
-const gridSize = 16;
+
+document.documentElement.style.setProperty('--grid-size', boardSize);
 
 function generateGrid(title, id) {
   const gridContainer = document.createElement('div');
@@ -16,14 +21,8 @@ function generateGrid(title, id) {
   grid.classList.add('grid');
   grid.setAttribute('id', id);
 
-  // for (let i = 0; i < gridSize; i += 1) {
-  //   const row = document.createElement('div');
-  //   row.textContent = i;
-  //   grid.appendChild(row);
-  // }
-
-  for (let y = -1; y < gridSize; y += 1) {
-    for (let x = -1; x < gridSize; x += 1) {
+  for (let y = -1; y < boardSize; y += 1) {
+    for (let x = -1; x < boardSize; x += 1) {
       if (x === -1 && y === -1) {
         const label = document.createElement('div');
         label.classList.add('label');
@@ -55,7 +54,7 @@ function addGridPage() {
   const gridPage = document.createElement('div');
   gridPage.setAttribute('id', 'grid-page');
 
-  gridPage.appendChild(generateGrid('Player', 'player1-grid'));
+  gridPage.appendChild(generateGrid('Player', 'player-grid'));
   gridPage.appendChild(generateGrid('Computer', 'computer-grid'));
 
   return gridPage;
