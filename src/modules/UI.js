@@ -81,13 +81,13 @@ function loadStartPage() {
   // Create overlay
   const overlay = document.createElement('div');
   overlay.setAttribute('id', 'start-overlay');
-  // overlay.classList.add('active');
+  overlay.classList.add('active');
   content.appendChild(overlay);
 
   // Create start page to place ships
   const start = document.createElement('div');
   start.setAttribute('id', 'start');
-  // start.classList.add('active');
+  start.classList.add('active');
 
   // Add grid
   start.appendChild(generateGrid('', 'start-grid'));
@@ -105,12 +105,12 @@ function loadStartPage() {
 function loadEndPage() {
   const overlay = document.createElement('div');
   overlay.setAttribute('id', 'end-overlay');
-  overlay.classList.add('active');
+  // overlay.classList.add('active');
   content.appendChild(overlay);
 
   const end = document.createElement('div');
   end.setAttribute('id', 'end');
-  end.classList.add('active');
+  // end.classList.add('active');
 
   const message = document.createElement('div');
   message.setAttribute('id', 'message');
