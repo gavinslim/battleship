@@ -9,9 +9,7 @@ const player = Player();
 const computer = Player();
 const playerBoard = Gameboard();
 const computerBoard = Gameboard();
-const setupBoard = Gameboard();
-
-const { shipyard } = Global();
+const global = Global();
 
 // Get x-y position of selected cube
 function getCubePosition(doc) {
@@ -100,8 +98,8 @@ function startGame() {
 // ==========
 // Display ship on starting grid
 function displayShip() {
-  console.log(shipyard.length);
-  if (shipyard.length === 0) { return; }
+  // console.log(global.shipyard.length);
+  if (global.shipyard.length === 0) { return; }
   const position = getCubePosition(this);
 
   const parentID = this.parentNode.getAttribute('id');
@@ -110,7 +108,7 @@ function displayShip() {
     cube.classList.remove('highlight');
   });
 
-  const currentShip = shipyard[shipyard.length - 1];
+  const currentShip = global.shipyard[global.shipyard.length - 1];
 
   for (let i = 0; i < currentShip.length; i += 1) {
     const cubes = currentShip.horizontal
@@ -133,8 +131,8 @@ function genRandomPosition(currentShip) {
   let isConflicted;
 
   do {
-    xPos = Math.floor(Math.random() * computerBoard.getBoardSize());
-    yPos = Math.floor(Math.random() * computerBoard.getBoardSize());
+    xPos = Math.floor(Math.random() * global.boardSize);
+    yPos = Math.floor(Math.random() * global.boardSize);
     randomBoolean = Math.random() < 0.5;
 
     isConflicted = computerBoard.isConflict(
@@ -154,10 +152,10 @@ function genRandomPosition(currentShip) {
 
 function placeShips() {
   // Ignore if no ships left to place
-  if (shipyard.length === 0) { return; }
+  if (global.shipyard.length === 0) { return; }
 
   // Initialize
-  const currentShip = shipyard[shipyard.length - 1];
+  const currentShip = global.shipyard[global.shipyard.length - 1];
   const position = getCubePosition(this);
 
   // Ignore placement if conflicts with existing ships
@@ -202,10 +200,10 @@ function placeShips() {
   console.log(randPosition.x, randPosition.y);
 
   // Remove current ship
-  shipyard.pop();
+  global.shipyard.pop();
 
   // Remove UI once all Player ships are placed
-  if (shipyard.length === 0) {
+  if (global.shipyard.length === 0) {
     overlay.removeStartOverlay();
   }
 }
@@ -214,9 +212,20 @@ function placeShips() {
 function activateRotateBtn() {
   const button = document.querySelector('#rotate-btn');
   button.addEventListener('click', () => {
-    if (shipyard.length === 0) { return; }
-    const currentShip = shipyard[shipyard.length - 1];
+    if (global.shipyard.length === 0) { return; }
+    const currentShip = global.shipyard[global.shipyard.length - 1];
     currentShip.horizontal = !currentShip.horizontal;
+  });
+}
+
+function clearGrid(id) {
+  const grid = document.querySelector(`#${id}`);
+  const cubes = grid.childNodes;
+  cubes.forEach((cube) => {
+    cube.classList.remove('miss');
+    cube.classList.remove('highlight');
+    cube.classList.remove('placed');
+    cube.classList.remove('hit');
   });
 }
 
@@ -224,8 +233,14 @@ function activateRotateBtn() {
 function activateResetBtn() {
   const reset = document.querySelector('#reset-btn');
   reset.addEventListener('click', () => {
+    clearGrid('start-grid');
+    clearGrid('computer-grid');
+    clearGrid('player-grid');
+    global.resetShipYard();
+
     playerBoard.reset();
     computerBoard.reset();
+
     overlay.removeEndOverlay();
     overlay.displayStartOverlay();
   });

@@ -15,7 +15,6 @@ const Gameboard = () => {
 
   const getMissedList = () => missedList;
   const getHitList = () => hitList;
-  const getBoardSize = () => boardSize;
 
   const isBoardFull = () => {
     const totalHits = missedList.length + hitList.length;
@@ -69,11 +68,6 @@ const Gameboard = () => {
     shipList.push(ship);
     return true;
   };
-
-  // Print out ships
-  const displayShips = () => shipList.forEach((ship) => {
-    console.log(ship.getCoordinate(), `Length: ${ship.getLength()}`);
-  });
 
   // Check if position has already been hit
   const alreadyHit = (xPos, yPos) => {
@@ -131,11 +125,12 @@ const Gameboard = () => {
     shipList = [];
     missedList = [];
     hitList = [];
+    for (let row = 0; row < boardSize; row += 1) {
+      board[row] = Array(boardSize).fill(0);
+    }
   };
 
   return {
-    displayShips,
-    getBoardSize,
     isBoardFull,
     isConflict,
     placeShip,
