@@ -74,7 +74,7 @@ describe('Check conflict for vertical ship', () => {
     expect(board.isConflict(7, 10, ship.cruiser, true)).toBe(false);
     expect(board.isConflict(7, 11, ship.carrier, true)).toBe(true);
     expect(board.isConflict(9, 13, ship.cruiser, true)).toBe(false);
-    expect(board.isConflict(9, 10, ship.carrier, false)).toBe(false);
+    expect(board.isConflict(9, 9, ship.carrier, false)).toBe(false);
   });
 });
 

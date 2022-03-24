@@ -3,6 +3,8 @@ const { Player } = require('../player');
 const { Gameboard } = require('../gameboard');
 const { Global } = require('../globals');
 
+const { boardSize } = Global();
+
 const ship = {
   carrier: 5,
   battleship: 4,
@@ -41,8 +43,6 @@ describe('Attack Group Randomly', () => {
 
   const board1 = Gameboard();
   const board2 = Gameboard();
-
-  const { boardSize } = Global();
 
   board1.placeShip(0, 0, ship.destroyer);
   board2.placeShip(0, 0, ship.destroyer);
