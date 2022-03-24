@@ -71,6 +71,8 @@ const Gameboard = () => {
 
   // Check if position has already been hit
   const alreadyHit = (xPos, yPos) => {
+    if (xPos >= boardSize || yPos >= boardSize) return false;
+
     const missedFound = missedList.some((miss) => (miss.x === xPos) && (miss.y === yPos));
     const hitFound = hitList.some((hits) => (hits.x === xPos) && (hits.y === yPos));
 

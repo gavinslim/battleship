@@ -22,16 +22,24 @@ function getCubePosition(doc) {
   return results;
 }
 
+let smartMove = false;
+
 // ==========
 // Game Phase
 // ==========
 function displayWinPage() {
   console.log('You win!');
+  const message = document.querySelector('#message');
+  message.textContent = 'YOU WIN!';
+
   overlay.displayEndOverlay();
 }
 
 function displayLossPage() {
   console.log('You loss!');
+  const message = document.querySelector('#message');
+  message.textContent = 'YOU LOSE!';
+
   overlay.displayEndOverlay();
 }
 
@@ -65,7 +73,13 @@ function userAttack() {
   if (computerBoard.alreadyHit(position.x, position.y)) return;
 
   player.attack(computerBoard, position.x, position.y);
-  computer.randomAttack(playerBoard);
+  // computer.attack(playerBoard, position.x, position.y);
+  if (smartMove) {
+    smartMove = computer.smartAttack(playerBoard);
+    // console.log(smartMove);
+  } else if (computer.randomAttack(playerBoard)) {
+    smartMove = !smartMove;
+  }
 
   refreshGrid(computerBoard, 'computer-grid');
   refreshGrid(playerBoard, 'player-grid');
