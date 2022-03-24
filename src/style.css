@@ -55,6 +55,8 @@ body {
   display: grid;
   grid-template-columns: repeat(calc(var(--grid-size) + 1), var(--cube-size));
   grid-template-rows: repeat(calc(var(--grid-size) + 1), var(--cube-size));
+  justify-content: center;
+  align-items: center;
 }
 
 .cube {
@@ -70,19 +72,19 @@ body {
 
 .cube.miss, .cube.highlight {
   background-color: lightgray;
-  border: 1px solid transparent;
+  border: 1px solid lightgray;
   z-index: 1;
 }
 
 .cube.placed {
   background-color: #333;
-  border: 1px solid #333;
+  border: none;
   z-index: 2;
 }
 
 .cube.hit {
   background-color: red;
-  border: 1px solid red;
+  border: none;
   z-index: 2;
 }
 
