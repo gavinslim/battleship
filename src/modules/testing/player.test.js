@@ -1,9 +1,7 @@
 /* eslint-disable no-undef */
-const playerFuncs = require('../player');
-const gameboardFuncs = require('../gameboard');
-
-const { Player } = playerFuncs;
-const { Gameboard } = gameboardFuncs;
+const { Player } = require('../player');
+const { Gameboard } = require('../gameboard');
+const { Global } = require('../globals');
 
 const ship = {
   carrier: 5,
@@ -44,6 +42,8 @@ describe('Attack Group Randomly', () => {
   const board1 = Gameboard();
   const board2 = Gameboard();
 
+  const { boardSize } = Global();
+
   board1.placeShip(0, 0, ship.destroyer);
   board2.placeShip(0, 0, ship.destroyer);
 
@@ -56,13 +56,13 @@ describe('Attack Group Randomly', () => {
   });
 
   test('Keep attacking until full', () => {
-    for (let i = 0; i < 16 * 16; i += 1) {
+    for (let i = 0; i < boardSize * boardSize; i += 1) {
       expect(p2.randomAttack(board1)).toBe(true);
     }
   });
 
   test('Keep attacking until full 1', () => {
-    for (let i = 0; i < 20 * 20 + 1; i += 1) {
+    for (let i = 0; i < boardSize * boardSize + 1; i += 1) {
       expect(p2.randomAttack(board1)).toBe(false);
     }
   });

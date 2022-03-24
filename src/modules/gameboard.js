@@ -3,9 +3,9 @@ const { Global } = require('./globals');
 
 const Gameboard = () => {
   const { boardSize } = Global();
-  const shipList = [];
-  const missedList = [];
-  const hitList = [];
+  let shipList = [];
+  let missedList = [];
+  let hitList = [];
 
   // Initialize board as 2D array
   const board = [];
@@ -127,6 +127,12 @@ const Gameboard = () => {
 
   const checkAllShipsSunk = () => !(shipList.find((ship) => ship.isSunk() === false));
 
+  const reset = () => {
+    shipList = [];
+    missedList = [];
+    hitList = [];
+  };
+
   return {
     displayShips,
     getBoardSize,
@@ -140,6 +146,7 @@ const Gameboard = () => {
     checkAllShipsSunk,
     getMissedList,
     getHitList,
+    reset,
   };
 };
 

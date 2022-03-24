@@ -9,10 +9,10 @@ const Global = () => {
 
   // Ships to be placed on Player's board
   const shipyard = [
-    { length: ship.destroyer, horizontal: true },
-    { length: ship.submarine, horizontal: true },
-    { length: ship.cruiser, horizontal: true },
-    { length: ship.battleship, horizontal: true },
+    // { length: ship.destroyer, horizontal: true },
+    // { length: ship.submarine, horizontal: true },
+    // { length: ship.cruiser, horizontal: true },
+    // { length: ship.battleship, horizontal: true },
     { length: ship.carrier, horizontal: true },
   ];
 

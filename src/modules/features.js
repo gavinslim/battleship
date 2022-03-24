@@ -1,44 +1,43 @@
+const { Global } = require('./globals');
 const { Player } = require('./player');
 const { Gameboard } = require('./gameboard');
-const { Global } = require('./globals');
+
+const overlay = require('./features/overlay');
 
 // Initialize Players and Gameboards
-const p1 = Player();
-const p2 = Player();
-
-const board1 = Gameboard();
-const board2 = Gameboard();
+const player = Player();
+const computer = Player();
+const playerBoard = Gameboard();
+const computerBoard = Gameboard();
+const setupBoard = Gameboard();
 
 const { shipyard } = Global();
-// const { shipyard } = Global();
 
-// const ship = {
-//   destroyer: 2,
-//   submarine: 3,
-//   cruiser: 3,
-//   battleship: 4,
-//   carrier: 5,
-// };
-
-// Ships to be placed on player 1's board
-// const shipyard = [
-//   { length: ship.destroyer, horizontal: true },
-//   { length: ship.submarine, horizontal: true },
-//   { length: ship.cruiser, horizontal: true },
-//   { length: ship.battleship, horizontal: true },
-//   { length: ship.carrier, horizontal: true },
-// ];
-
-function getCubeCoordinate(doc) {
-  const childID = doc.getAttribute('data-key');
+// Get x-y position of selected cube
+function getCubePosition(doc) {
+  const cube = doc.getAttribute('data-key');
   const regex = /x([0-9]+)-y([0-9]+)/;
   const results = {
-    x: parseInt(regex.exec(childID)[1], 10),
-    y: parseInt(regex.exec(childID)[2], 10),
+    x: parseInt(regex.exec(cube)[1], 10),
+    y: parseInt(regex.exec(cube)[2], 10),
   };
   return results;
 }
 
+// ==========
+// Game Phase
+// ==========
+function displayWinPage() {
+  console.log('You win!');
+  overlay.displayEndOverlay();
+}
+
+function displayLossPage() {
+  console.log('You loss!');
+  overlay.displayEndOverlay();
+}
+
+// Refresh grid and display hit and miss results
 function refreshGrid(board, id) {
   const missedList = board.getMissedList();
   const hitList = board.getHitList();
@@ -62,77 +61,83 @@ function refreshGrid(board, id) {
   });
 }
 
-function mouseClick() {
-  const clickedCube = this.getAttribute('data-key');
+// User attacking Computer's board
+function userAttack() {
+  const position = getCubePosition(this);
+  if (computerBoard.alreadyHit(position.x, position.y)) return;
 
-  const regex = /x([0-9]+)-y([0-9]+)/;
-  const results = {
-    x: parseInt(regex.exec(clickedCube)[1], 10),
-    y: parseInt(regex.exec(clickedCube)[2], 10),
-  };
+  player.attack(computerBoard, position.x, position.y);
+  computer.randomAttack(playerBoard);
 
-  if (!board2.alreadyHit(results.x, results.y)) {
-    p1.attack(board2, results.x, results.y);
-    p2.randomAttack(board1);
+  refreshGrid(computerBoard, 'computer-grid');
+  refreshGrid(playerBoard, 'player-grid');
+
+  // Check for Winner
+  if (computerBoard.checkAllShipsSunk()) {
+    displayWinPage();
+  } else if (playerBoard.checkAllShipsSunk()) {
+    displayLossPage();
   }
-
-  refreshGrid(board2, 'computer-grid');
-  refreshGrid(board1, 'player-grid');
 }
 
-// Add grid functions
-function runGame() {
+function startGame() {
+  // Add user attack function to each cube on the computer's grid
   const grids = document.querySelectorAll('.grid');
   grids.forEach((grid) => {
     if (grid.getAttribute('id') === 'computer-grid') {
       const cubes = grid.childNodes;
       cubes.forEach((cube) => {
         if (!(cube.classList.contains('label'))) {
-          cube.addEventListener('click', mouseClick, false);
+          cube.addEventListener('click', userAttack, false);
         }
       });
     }
   });
 }
 
-// Display ship during ship placement phase
+// ==========
+// Setup Game
+// ==========
+// Display ship on starting grid
 function displayShip() {
+  console.log(shipyard.length);
   if (shipyard.length === 0) { return; }
-  const coordinate = getCubeCoordinate(this);
+  const position = getCubePosition(this);
 
   const parentID = this.parentNode.getAttribute('id');
   const gridNode = document.querySelector(`#${parentID}`);
   gridNode.childNodes.forEach((cube) => {
-    cube.classList.remove('miss');
+    cube.classList.remove('highlight');
   });
 
   const currentShip = shipyard[shipyard.length - 1];
 
   for (let i = 0; i < currentShip.length; i += 1) {
     const cubes = currentShip.horizontal
-      ? document.querySelectorAll(`div[data-key="x${coordinate.x + i}-y${coordinate.y}"]`)
-      : document.querySelectorAll(`div[data-key="x${coordinate.x}-y${coordinate.y + i}"]`);
+      ? document.querySelectorAll(`div[data-key="x${position.x + i}-y${position.y}"]`)
+      : document.querySelectorAll(`div[data-key="x${position.x}-y${position.y + i}"]`);
 
     cubes.forEach((cube) => {
       if (cube.parentNode.getAttribute('id') === 'start-grid') {
-        cube.classList.add('miss');
+        cube.classList.add('highlight');
       }
     });
   }
 }
 
-function generateRandomCoord(currentShip) {
+// Generate random position for computer
+function genRandomPosition(currentShip) {
   let xPos;
   let yPos;
   let randomBoolean;
   let isConflicted;
 
   do {
-    xPos = Math.floor(Math.random() * board2.getBoardSize());
-    yPos = Math.floor(Math.random() * board2.getBoardSize());
+    xPos = Math.floor(Math.random() * computerBoard.getBoardSize());
+    yPos = Math.floor(Math.random() * computerBoard.getBoardSize());
     randomBoolean = Math.random() < 0.5;
 
-    isConflicted = board2.isConflict(
+    isConflicted = computerBoard.isConflict(
       xPos,
       yPos,
       currentShip.length,
@@ -153,51 +158,61 @@ function placeShips() {
 
   // Initialize
   const currentShip = shipyard[shipyard.length - 1];
-  const coordinate = getCubeCoordinate(this);
+  const position = getCubePosition(this);
 
-  const isConflicted = board1.isConflict(
-    coordinate.x,
-    coordinate.y,
+  // Ignore placement if conflicts with existing ships
+  const isConflicted = playerBoard.isConflict(
+    position.x,
+    position.y,
+    currentShip.length,
+    currentShip.horizontal,
+  );
+  if (isConflicted) return;
+
+  // Highlight cube on starting grid
+  for (let i = 0; i < currentShip.length; i += 1) {
+    const cubes = currentShip.horizontal
+      ? document.querySelectorAll(`div[data-key="x${position.x + i}-y${position.y}"]`)
+      : document.querySelectorAll(`div[data-key="x${position.x}-y${position.y + i}"]`);
+
+    cubes.forEach((cube) => {
+      if (cube.parentNode.getAttribute('id') !== 'computer-grid') {
+        cube.classList.add('placed');
+      }
+    });
+  }
+
+  // Place ship on Player and Computer board
+  playerBoard.placeShip(
+    position.x,
+    position.y,
     currentShip.length,
     currentShip.horizontal,
   );
 
-  // If ship placement is not conflicing with existing ship, place on board
-  if (!isConflicted) {
-    for (let i = 0; i < currentShip.length; i += 1) {
-      const cubes = currentShip.horizontal
-        ? document.querySelectorAll(`div[data-key="x${coordinate.x + i}-y${coordinate.y}"]`)
-        : document.querySelectorAll(`div[data-key="x${coordinate.x}-y${coordinate.y + i}"]`);
+  // Place ship on Computer board randomly
+  const randPosition = genRandomPosition(currentShip);
+  computerBoard.placeShip(
+    randPosition.x,
+    randPosition.y,
+    currentShip.length,
+    randPosition.horizontal,
+  );
 
-      cubes.forEach((cube) => {
-        if (cube.parentNode.getAttribute('id') !== 'computer-grid') {
-          cube.classList.add('set');
-        }
-      });
-    }
+  console.log(randPosition.x, randPosition.y);
 
-    // Place ship on Player and Computer board
-    board1.placeShip(coordinate.x, coordinate.y, currentShip.length, currentShip.horizontal);
+  // Remove current ship
+  shipyard.pop();
 
-    // Place ship on Computer board randomly
-    const compCoord = generateRandomCoord(currentShip);
-    board2.placeShip(compCoord.x, compCoord.y, currentShip.length, compCoord.horizontal);
-
-    shipyard.pop();
-
-    // Remove UI once all Player ships are placed
-    if (shipyard.length === 0) {
-      const overlay = document.querySelector('#overlay');
-      const start = document.querySelector('#start');
-
-      overlay.classList.remove('active');
-      start.classList.remove('active');
-    }
+  // Remove UI once all Player ships are placed
+  if (shipyard.length === 0) {
+    overlay.removeStartOverlay();
   }
 }
 
-function addRotateFeature() {
-  const button = document.querySelector('#rotate-button');
+// Rotate button
+function activateRotateBtn() {
+  const button = document.querySelector('#rotate-btn');
   button.addEventListener('click', () => {
     if (shipyard.length === 0) { return; }
     const currentShip = shipyard[shipyard.length - 1];
@@ -205,9 +220,21 @@ function addRotateFeature() {
   });
 }
 
+// Reset button
+function activateResetBtn() {
+  const reset = document.querySelector('#reset-btn');
+  reset.addEventListener('click', () => {
+    playerBoard.reset();
+    computerBoard.reset();
+    overlay.removeEndOverlay();
+    overlay.displayStartOverlay();
+  });
+}
+
 // Add start functions for initial ship placement
-function runSetup() {
-  addRotateFeature();
+function setupGame() {
+  activateRotateBtn();
+  activateResetBtn();
 
   const grid = document.querySelector('#start-grid');
   const cubes = grid.childNodes;
@@ -220,8 +247,8 @@ function runSetup() {
 }
 
 function loadFeatures() {
-  runGame();
-  runSetup();
+  setupGame();
+  startGame();
 }
 
 export default loadFeatures;

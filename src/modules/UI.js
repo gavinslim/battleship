@@ -76,34 +76,61 @@ function loadMain() {
   content.appendChild(main);
 }
 
+// Starting overlay for ship placement
 function loadStartPage() {
   // Create overlay
   const overlay = document.createElement('div');
-  overlay.setAttribute('id', 'overlay');
-  overlay.classList.add('active');
+  overlay.setAttribute('id', 'start-overlay');
+  // overlay.classList.add('active');
   content.appendChild(overlay);
 
   // Create start page to place ships
   const start = document.createElement('div');
   start.setAttribute('id', 'start');
-  start.classList.add('active');
+  // start.classList.add('active');
 
   // Add grid
   start.appendChild(generateGrid('', 'start-grid'));
 
   // Add rotate button
   const button = document.createElement('button');
-  button.setAttribute('id', 'rotate-button');
+  button.classList.add('button');
+  button.setAttribute('id', 'rotate-btn');
   button.textContent = 'Rotate';
   start.appendChild(button);
 
   content.appendChild(start);
+}
+// Ending overlay for announcing winner
+function loadEndPage() {
+  const overlay = document.createElement('div');
+  overlay.setAttribute('id', 'end-overlay');
+  overlay.classList.add('active');
+  content.appendChild(overlay);
+
+  const end = document.createElement('div');
+  end.setAttribute('id', 'end');
+  end.classList.add('active');
+
+  const message = document.createElement('div');
+  message.setAttribute('id', 'message');
+  message.textContent = 'YOU WIN!';
+  end.appendChild(message);
+
+  const button = document.createElement('button');
+  button.classList.add('button');
+  button.setAttribute('id', 'reset-btn');
+  button.textContent = 'Reset';
+  end.appendChild(button);
+
+  content.appendChild(end);
 }
 
 function loadPage() {
   loadHeader();
   loadMain();
   loadStartPage();
+  loadEndPage();
   loadFeatures();
 }
 
