@@ -73,12 +73,13 @@ function userAttack() {
   if (computerBoard.alreadyHit(position.x, position.y)) return;
 
   player.attack(computerBoard, position.x, position.y);
-  // computer.attack(playerBoard, position.x, position.y);
+
   if (smartMove) {
     smartMove = computer.smartAttack(playerBoard);
-    // console.log(smartMove);
+    console.log('---');
   } else if (computer.randomAttack(playerBoard)) {
-    smartMove = !smartMove;
+    // smartMove = !smartMove;
+    smartMove = true;
   }
 
   refreshGrid(computerBoard, 'computer-grid');
@@ -254,6 +255,7 @@ function activateResetBtn() {
 
     playerBoard.reset();
     computerBoard.reset();
+    smartMove = false;
 
     overlay.removeEndOverlay();
     overlay.displayStartOverlay();

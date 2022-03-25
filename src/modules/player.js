@@ -27,177 +27,156 @@ const Player = () => {
     return opponentBoard.receiveAttack(posX, posY);
   };
 
-  // let current;
-  // let next;
-  // const state = () => {
-  //   if (current === 'Attack left') {
-  //     next = 'S2';
-  //   } else if (current === 'S2') {
-  //     next = 'S3';
-  //   } else if (current === 'S3') {
-  //     next = 'S4';
-  //   }
-
-  //   current = next;
-  // };
-
-  let horizontal = true;
+  let horizontal = null;
   let state = 'left';
 
   const smartAttack = (opponentBoard) => {
     let posX;
     let posY;
+    let hit;
 
     // Grab last two hit position
     const hitList = opponentBoard.getHitList();
     const missedList = opponentBoard.getMissedList();
     let secLastHit = null;
-    const secLastMiss = null;
+    // const secLastMiss = null;
 
     const lastHit = hitList[hitList.length - 1];
-    const lastMiss = missedList[missedList.length - 1];
+    // const lastMiss = missedList[missedList.length - 1];
+    // console.log(lastHit);
     posX = lastHit.x;
     posY = lastHit.y;
 
     if (hitList.length > 1) {
       // Check if last hit is directional
       secLastHit = hitList[hitList.length - 2];
-      if (Math.abs(lastHit.x - secLastHit.x) === 1 && state === 'left') {
+
+      const xDelta = Math.abs(lastHit.x - secLastHit.x);
+      const yDelta = Math.abs(lastHit.y - secLastHit.y);
+
+      if (xDelta === 1 && yDelta === 0 && (state === 'left' || state === 'right')) {
         console.log('Horizontal placement!');
         horizontal = true;
-      } else if (Math.abs(lastHit.y - secLastHit.y) === 1) {
+      } else if (xDelta === 0 && yDelta === 1) {
         console.log('Vertical placement!');
         horizontal = false;
       }
     }
 
+    // Avoid exceeding grid border
+    // if (posX === 0 && state === 'left') state = 'right';
+    // else if ((posX === boardSize - 1) && (state === 'right')) state = 'top';
+    // else if ((posY === 0) && (state === 'top')) state = 'bottom';
+    // else if ((posY === boardSize - 1) && (state === 'bottom')) state = 'left';
+
     // Attack right of last hit position
-    if (state === 'left' && horizontal === true) {
+    if (state === 'left') {
       while (opponentBoard.alreadyHit(posX, posY)) {
-        posX += 1;
-      }
-    } else if (state === 'right' && horizontal === true) {
-      while (opponentBoard.alreadyHit(posX, posY)) {
+        if (posX === 0) {
+          state = 'right';
+          console.log('Exceed: Transition to Right state');
+          break;
+        }
         posX -= 1;
       }
-    } else if (state === 'top' && horizontal === false) {
-      while (opponentBoard.alreadyHit(posX, posY)) {
-        posY += 1;
-      }
-    } else if (state === 'bottom' && horizontal === false) {
-      while (opponentBoard.alreadyHit(posX, posY)) {
-        posY -= 1;
-      }
+      // console.log('skip bottom');
     }
 
-    // // Get last missed attack
-    // if (missedList.length >= 1) {
-    //   missedHit = missedList[missedList.length - 1];
-    //   if ((missedList.length > 1)) {
-    //     secLastMiss = missedList[missedList.length - 2];
-    //   }
-    // }
-    // if (hitList.length > 1) {
-    //   secLastHit = hitList[hitList.length - 2];
-    // }
+    if (state === 'right') {
+      while (opponentBoard.alreadyHit(posX, posY)) {
+        if (posX === boardSize - 1) {
+          state = 'top';
+          console.log('Exceed: Transition to Top state');
+          break;
+        }
+        posX += 1;
+      }
+      // state = 'top';
+      // console.log('1 Exceed: Transition to Top state');
+    }
 
-    // if (hitList.length > 1) {
+    if (state === 'top') {
+      while (opponentBoard.alreadyHit(posX, posY)) {
+        if (posY === 0) {
+          state = 'bottom';
+          console.log('Exceed: Transition to Bottom state');
+          break;
+        }
+        posY -= 1;
+      }
+      // state = 'bottom';
+      // console.log('1 Exceed: Transition to Bottom state');
+    }
 
-    //   // Check if last hit is directional
-    //   const secLastHit = hitList[hitList.length - 2];
-    //   if (Math.abs(lastHit.x - secLastHit.x) === 1) {
-    //     posX = lastHit.x + 1;
-    //     while (opponentBoard.alreadyHit(posX, posY)) {
-    //       posX += 1;
-    //     }
-    //     console.log('Attacking right direction');
-    //   } else if (Math.abs(lastHit.y - secLastHit.y) === 1) {
-    //     posY = lastHit.y + 1;
-    //     while (opponentBoard.alreadyHit(posX, posY)) {
-    //       posY += 1;
-    //     }
-    //     console.log('Attacking top direction');
-    //   }
+    if (state === 'bottom') {
+      while (opponentBoard.alreadyHit(posX, posY)) {
+        if (posY === boardSize - 1) {
+          state = 'reset';
+          console.log('Exceed: Transition to Reset state');
+          break;
+        }
+        posY += 1;
+      }
+      // state = 'reset';
+      // console.log('1 Exceed: Transition to Reset state');
+    }
 
-    // // Attack right of last hit position
-    // } else if (!opponentBoard.alreadyHit(lastHit.x + 1, lastHit.y)) {
-    //   posX = lastHit.x + 1;
-    //   posY = lastHit.y;
-
-    // // Attack left of last hit position
-    // } else if (!opponentBoard.alreadyHit(lastHit.x - 1, lastHit.y)) {
-    //   posX = lastHit.x - 1;
-    //   posY = lastHit.y;
-
-    // // Attack top of last hit position
-    // } else if (!opponentBoard.alreadyHit(lastHit.x, lastHit.y + 1)) {
-    //   posX = lastHit.x;
-    //   posY = lastHit.y + 1;
-
-    // // Attack bottom of last hit position
-    // } else if (!opponentBoard.alreadyHit(lastHit.x, lastHit.y - 1)) {
-    //   posX = lastHit.x;
-    //   posY = lastHit.y - 1;
-    // }
-
-    // Attack one of the surrounding cubes until the next hit
-    // do {
-    //   posX = lastHit.x + 1;
-    //   posY = lastHit.y;
-    //   console.log(posX, posY);
-    // } while (opponentBoard.alreadyHit(posX, posY));
-
-    // Attack next cube based on direction of last two hits
-
-    // Keep hitting until attack misses
+    if (state === 'reset') {
+      hit = randomAttack(opponentBoard);
+    } else {
+      hit = opponentBoard.receiveAttack(posX, posY);
+    }
 
     // Attack opposite direction
-    console.log(`Hit: ${posX}, ${posY}`);
+    if (hit) {
+      console.log(`Hit: ${posX}, ${posY} | State: ${state} | Hit? ${hit} | Hori? ${horizontal}`);
+    } else {
+      console.log(`Miss: ${posX}, ${posY} | State: ${state} | Hit? ${hit} | Hori? ${horizontal}`);
+    }
 
-    const hit = opponentBoard.receiveAttack(posX, posY);
-
-    // Transition to right
+    // Transition to right state
     if (state === 'left' && !hit) {
-      console.log('Go right!');
+      console.log('Transition to Right state');
       state = 'right';
       return true;
     }
 
-    // Transition to top or reset
-    if (state === 'right' && !hit) {
+    // Transition to top or reset state
+    if ((state === 'right' && !hit)) {
       if (horizontal === true) {
-        console.log('Go top!');
-        horizontal = false;
-        state = 'top';
-        return true;
+        // Reset
+        console.log('Transition to Reset state');
+        state = 'left';
+        horizontal = null;
+        return false;
       }
 
-      // Reset
-      console.log('reset');
-      state = 'left';
-      horizontal = true;
-      return false;
+      console.log('Transition to Top state!');
+      horizontal = false;
+      state = 'top';
+      return true;
     }
 
     // Transition to bottom
     if (state === 'top' && !hit) {
-      if (horizontal === true) {
-        // Reset
-        console.log('reset');
-        state = 'left';
-        horizontal = true;
-        return false;
+      if (horizontal === false) {
+        console.log('Transition to Bottom state');
+        state = 'bottom';
+        return true;
       }
-      console.log('Go down');
-      state = 'bottom';
-      return true;
+
+      // Reset
+      console.log('Transition to Reset state');
+      state = 'left';
+      horizontal = null;
+      return false;
     }
 
     if (state === 'bottom' && !hit) {
       // Reset
-      console.log('reset');
+      console.log('Transition to Reset state');
       state = 'left';
-      horizontal = true;
+      horizontal = null;
       return false;
     }
 
