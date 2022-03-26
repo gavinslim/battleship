@@ -28,11 +28,14 @@ const Global = () => {
     );
   };
 
+  const delay = 300;
+
   return {
     ship,
     shipyard,
     boardSize,
     resetShipYard,
+    delay,
   };
 };
 

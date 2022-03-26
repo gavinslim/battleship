@@ -22,8 +22,6 @@ function getCubePosition(doc) {
   return results;
 }
 
-let smartMove = false;
-
 // ==========
 // Game Phase
 // ==========
@@ -65,25 +63,25 @@ function refreshGrid(board, id) {
   });
 }
 
-// User attacking Computer's board
-function userAttack() {
-  const position = getCubePosition(this);
-  if (computerBoard.alreadyHit(position.x, position.y)) return;
-
+// Player attack
+function playerAttack(position) {
   player.attack(computerBoard, position.x, position.y);
+  refreshGrid(computerBoard, 'computer-grid');
+}
 
+// Computer attack
+let smartMove = false;
+function computerAttack() {
   if (smartMove) {
     smartMove = computer.smartAttack(playerBoard);
-    console.log('---');
   } else if (computer.randomAttack(playerBoard)) {
-    // smartMove = !smartMove;
     smartMove = true;
   }
-
-  refreshGrid(computerBoard, 'computer-grid');
   refreshGrid(playerBoard, 'player-grid');
+}
 
-  // Check for Winner
+// Check for Winner
+function checkWinner() {
   if (computerBoard.checkAllShipsSunk()) {
     displayWinPage();
   } else if (playerBoard.checkAllShipsSunk()) {
@@ -91,15 +89,30 @@ function userAttack() {
   }
 }
 
+// Attack round
+function attackRound() {
+  const position = getCubePosition(this);
+  if (computerBoard.alreadyHit(position.x, position.y)) return;
+
+  // Player's turn
+  playerAttack(position);
+
+  // Computer's turn with delay
+  setTimeout(() => {
+    computerAttack();
+    checkWinner();
+  }, global.delay);
+}
+
+// Add user attack function to each cube on the computer's grid
 function startGame() {
-  // Add user attack function to each cube on the computer's grid
   const grids = document.querySelectorAll('.grid');
   grids.forEach((grid) => {
     if (grid.getAttribute('id') === 'computer-grid') {
       const cubes = grid.childNodes;
       cubes.forEach((cube) => {
         if (!(cube.classList.contains('label'))) {
-          cube.addEventListener('click', userAttack, false);
+          cube.addEventListener('click', attackRound, false);
         }
       });
     }
