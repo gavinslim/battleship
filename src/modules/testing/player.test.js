@@ -39,7 +39,6 @@ describe('Attack Group', () => {
 
 describe('Attack Group Randomly', () => {
   const p1 = Player();
-  const p2 = Player();
 
   const board1 = Gameboard();
   const board2 = Gameboard();
@@ -48,22 +47,10 @@ describe('Attack Group Randomly', () => {
   board2.placeShip(0, 0, ship.destroyer);
 
   test('Random Attack 1', () => {
-    expect(p1.randomAttack(board2)).toBe(true);
+    expect(p1.randomAttack(board2)).toBe(false);
   });
 
   test('Random Attack 1 again', () => {
-    expect(p1.randomAttack(board2)).toBe(true);
-  });
-
-  test('Keep attacking until full', () => {
-    for (let i = 0; i < boardSize * boardSize; i += 1) {
-      expect(p2.randomAttack(board1)).toBe(true);
-    }
-  });
-
-  test('Keep attacking until full 1', () => {
-    for (let i = 0; i < boardSize * boardSize + 1; i += 1) {
-      expect(p2.randomAttack(board1)).toBe(false);
-    }
+    expect(p1.randomAttack(board2)).toBe(false);
   });
 });
