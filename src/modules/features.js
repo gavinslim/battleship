@@ -225,11 +225,26 @@ function placeShips() {
 
 // Rotate button
 function activateRotateBtn() {
-  const button = document.querySelector('#rotate-btn');
-  button.addEventListener('click', () => {
+  // Rotate ship
+  function rotate() {
     if (global.shipyard.length === 0) { return; }
+
     const currentShip = global.shipyard[global.shipyard.length - 1];
     currentShip.horizontal = !currentShip.horizontal;
+
+    // Refresh highlighted cubes on grid
+    const cube = document.querySelectorAll('.highlight')[0];
+    const mouseEvent = new Event('mouseover');
+    cube.dispatchEvent(mouseEvent);
+  }
+
+  // Clicking Rotate button
+  const button = document.querySelector('#rotate-btn');
+  button.addEventListener('click', rotate);
+
+  // Press 'R' key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R') rotate();
   });
 }
 
