@@ -80,43 +80,45 @@ function loadMain() {
 function loadStartPage() {
   // Create overlay
   const overlay = document.createElement('div');
-  overlay.setAttribute('id', 'start-overlay');
+  overlay.setAttribute('id', 'setup-overlay');
   overlay.classList.add('active');
   content.appendChild(overlay);
 
   // Create start page to place ships
-  const start = document.createElement('div');
-  start.setAttribute('id', 'start');
-  start.classList.add('active');
+  const setup = document.createElement('div');
+  setup.setAttribute('id', 'setup');
+  setup.classList.add('active');
 
   // Add grid
-  start.appendChild(generateGrid('', 'start-grid'));
+  setup.appendChild(generateGrid('Setup', 'setup-grid'));
 
   // Add rotate button
   const button = document.createElement('button');
   button.classList.add('button');
   button.setAttribute('id', 'rotate-btn');
   button.textContent = 'Rotate';
-  start.appendChild(button);
+  setup.appendChild(button);
 
-  content.appendChild(start);
+  content.appendChild(setup);
 }
 // Ending overlay for announcing winner
 function loadEndPage() {
+  // Overlay
   const overlay = document.createElement('div');
   overlay.setAttribute('id', 'end-overlay');
-  // overlay.classList.add('active');
   content.appendChild(overlay);
 
+  // Result element
   const end = document.createElement('div');
   end.setAttribute('id', 'end');
-  // end.classList.add('active');
 
+  // Ending message in result element
   const message = document.createElement('div');
   message.setAttribute('id', 'message');
   message.textContent = 'YOU WIN!';
   end.appendChild(message);
 
+  // Rotating button
   const button = document.createElement('button');
   button.classList.add('button');
   button.setAttribute('id', 'reset-btn');

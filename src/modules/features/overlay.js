@@ -1,15 +1,15 @@
-function displayStartOverlay() {
-  const overlay = document.querySelector('#start-overlay');
-  const start = document.querySelector('#start');
+function displaySetupOverlay() {
+  const overlay = document.querySelector('#setup-overlay');
+  const setup = document.querySelector('#setup');
   overlay.classList.add('active');
-  start.classList.add('active');
+  setup.classList.add('active');
 }
 
-function removeStartOverlay() {
-  const overlay = document.querySelector('#start-overlay');
-  const start = document.querySelector('#start');
+function removeSetupOverlay() {
+  const overlay = document.querySelector('#setup-overlay');
+  const setup = document.querySelector('#setup');
   overlay.classList.remove('active');
-  start.classList.remove('active');
+  setup.classList.remove('active');
 }
 
 function displayEndOverlay() {
@@ -27,8 +27,8 @@ function removeEndOverlay() {
 }
 
 module.exports = {
-  displayStartOverlay,
-  removeStartOverlay,
+  displaySetupOverlay,
+  removeSetupOverlay,
   displayEndOverlay,
   removeEndOverlay,
 };

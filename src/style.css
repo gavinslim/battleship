@@ -14,7 +14,6 @@ body {
 }
 
 #header {
-  /* border: 1px solid blue; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,14 +24,11 @@ body {
 }
 
 #main {
-  /* height: 100vh;  */
   position: relative;
 }
 
 #grid-page {
-  /* border: 1px solid black; */
   display: flex;
-
   justify-content: center;
   align-items: center;
   gap: 125px;
@@ -94,7 +90,7 @@ body {
   align-items: center;
 }
 
-#start-overlay, #end-overlay {
+#setup-overlay, #end-overlay {
   position: fixed;
   opacity: 0;
   top: 0;
@@ -106,12 +102,12 @@ body {
   z-index: 2;
 }
 
-#start-overlay.active, #end-overlay.active {
+#setup-overlay.active, #end-overlay.active {
   opacity: 1;
   pointer-events: all;
 }
 
-#start {
+#setup {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -120,6 +116,7 @@ body {
   background-color: var(--background-grey);
 
   padding: 20px;
+  padding-right: 30px;
   max-width: 80%;
   border-radius: 10px;
 
@@ -131,14 +128,22 @@ body {
   cursor: pointer;
 }
 
-#start.active {
+#setup.active {
   transform: translate(-50%, -50%) scale(1);
 }
+
+#setup .grid-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 
 .button {
   width: 90px;
   height: 40px;
-  /* background-color: #lightgrey; */
 }
 
 
@@ -165,6 +170,6 @@ body {
   cursor: pointer;
 }
 
-#start.active, #end.active {
+#setup.active, #end.active {
   transform: translate(-50%, -50%) scale(1);
 }
