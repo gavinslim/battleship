@@ -93,14 +93,16 @@ function removeEndOverlay() {
 // Display win page
 function displayWinPage() {
   const message = document.querySelector('#message');
-  message.textContent = 'YOU WIN!';
+  message.textContent = 'VICTORY';
+  message.style.setProperty('color', 'green');
   displayEndOverlay();
 }
 
 // Display loss page
 function displayLossPage() {
   const message = document.querySelector('#message');
-  message.textContent = 'YOU LOSE!';
+  message.textContent = 'DEFEAT';
+  message.style.setProperty('color', 'red');
   displayEndOverlay();
 }
 
