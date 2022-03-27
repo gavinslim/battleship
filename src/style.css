@@ -2,6 +2,7 @@
   --primary-dark: #333;
   --background-grey: #ededed;
   --background-color: rgba(255, 255, 255, 0);
+  --blue: #377bb3;
   --grid-size: 20;
   --cube-size: 28px;
 }
@@ -37,13 +38,18 @@ body {
 }
 
 #header #title {
-  color: #377bb3;
+  color: var(--blue);
   position: absolute;
   bottom: 0px;
 }
 
 #main {
   position: relative;
+}
+
+.button {
+  width: 90px;
+  height: 40px;
 }
 
 #grid-page {
@@ -142,8 +148,6 @@ body {
   background-color: var(--background-grey);
 
   padding: 20px;
-  /* padding-right: 30px; */
-  /* max-width: 80%; */
   width: 500px;
   border-radius: 10px;
 
@@ -165,13 +169,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  /* padding-right: 8px; */
-  /* border: 1px solid black; */
-}
-
-#setup .button {
-  width: 90px;
-  height: 40px;
 }
 
 #ship-list {
@@ -189,7 +186,6 @@ body {
 }
 
 .ship .icons {
-  /* border: 1px solid black; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -220,8 +216,7 @@ body {
   margin: 0px;
 }
 
-
-/* End */
+/* Result page */
 #end {
   position: fixed;
   top: 50%;
@@ -230,8 +225,8 @@ body {
   z-index: 10;
   background-color: var(--background-grey);
 
-  width: 700px;
-  height: 300px;
+  width: 450px;
+  height: 250px;
 
   padding: 20px;
   max-width: 80%;
@@ -246,4 +241,10 @@ body {
 
 #setup.active, #end.active {
   transform: translate(-50%, -50%) scale(1);
+}
+
+#message {
+  font-size: 70px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
 }

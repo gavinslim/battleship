@@ -62,6 +62,7 @@ function attackRound() {
   // Player's turn
   playerAttack(position);
   displayModule.refreshShipStatus(computerBoard, 'Computer');
+  checkWinner();
 
   // Computer's turn with delay
   setTimeout(() => {
@@ -94,14 +95,17 @@ function displayShip() {
   if (global.shipyard.length === 0) { return; }
   const position = getCubePosition(this);
 
+  // Clear highlighted cubes
   const parentID = this.parentNode.getAttribute('id');
   const gridNode = document.querySelector(`#${parentID}`);
   gridNode.childNodes.forEach((cube) => {
     cube.classList.remove('highlight');
   });
 
+  // Get current ship
   const currentShip = global.shipyard[global.shipyard.length - 1];
 
+  // Highlight cubes
   for (let i = 0; i < currentShip.length; i += 1) {
     const cubes = currentShip.horizontal
       ? document.querySelectorAll(`div[data-key="x${position.x + i}-y${position.y}"]`)
@@ -195,7 +199,6 @@ function placeShips() {
   displayModule.refreshShipStatus(computerBoard, 'Computer');
   displayModule.refreshShipStatus(playerBoard, 'Player');
   displayModule.refreshShipStatus(playerBoard, 'Setup');
-  console.log(randPosition.x, randPosition.y);
 
   // Remove current ship
   global.shipyard.pop();
