@@ -3,7 +3,16 @@
   --background-grey: #ededed;
   --background-color: rgba(255, 255, 255, 0);
   --grid-size: 20;
-  --cube-size: 30px;
+  --cube-size: 28px;
+}
+
+p {
+  margin: 4px;
+}
+
+hr {
+  color: black;
+  width: 400px;
 }
 
 body {
@@ -14,13 +23,23 @@ body {
 }
 
 #header {
+  position: relative;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 70px;
-  height: 100px;
+  height: 125px;
   font-weight: bold;
   letter-spacing: 0.1em;
+  margin: 0px;
+}
+
+#header #title {
+  color: #377bb3;
+  position: absolute;
+  bottom: 0px;
 }
 
 #main {
@@ -53,13 +72,16 @@ body {
   grid-template-rows: repeat(calc(var(--grid-size) + 1), var(--cube-size));
   justify-content: center;
   align-items: center;
+
+  grid-gap: 1px;
 }
 
 .cube {
   width: var(--cube-size);
   height: var(--cube-size);
-  border: 1px solid lightgray;
-  cursor: pointer;
+  /* border: 1px solid lightgray; */
+  box-shadow:0 0 0 1px lightgray;
+  cursor: crosshair;
 
   display: flex;
   justify-content: center;
@@ -68,28 +90,32 @@ body {
 
 .cube.miss, .cube.highlight {
   background-color: lightgray;
-  border: 1px solid lightgray;
+  box-shadow:0 0 0 1px lightgray;
   z-index: 1;
 }
 
 .cube.placed {
   background-color: #333;
-  border: none;
+  box-shadow:0 0 0 1px #333;
   z-index: 2;
 }
 
 .cube.hit {
   background-color: red;
-  border: none;
+  box-shadow:0 0 0 1px red;
   z-index: 2;
 }
 
 .label {
+  width: var(--cube-size);
+  height: var(--cube-size);
+  
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Setup Page */
 #setup-overlay, #end-overlay {
   position: fixed;
   opacity: 0;
@@ -116,8 +142,9 @@ body {
   background-color: var(--background-grey);
 
   padding: 20px;
-  padding-right: 30px;
-  max-width: 80%;
+  /* padding-right: 30px; */
+  /* max-width: 80%; */
+  width: 500px;
   border-radius: 10px;
 
   display: flex;
@@ -125,7 +152,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  cursor: pointer;
+  cursor: crosshair;
 }
 
 #setup.active {
@@ -138,15 +165,63 @@ body {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  /* padding-right: 8px; */
+  /* border: 1px solid black; */
 }
 
-
-.button {
+#setup .button {
   width: 90px;
   height: 40px;
 }
 
+#ship-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
+#ship-list .ship {
+  display: flex;
+  width: 150px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ship .icons {
+  /* border: 1px solid black; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ship .fa-circle-check {
+  color: green;
+  visibility: hidden;
+}
+
+.ship .fa-circle-check.active {
+  visibility: visible;
+}
+
+.ship .fa-circle-xmark {
+  color: red;
+  position: relative;
+  right: 16px;
+  visibility: hidden;
+}
+
+.ship .fa-circle-xmark.active {
+  visibility: visible;
+}
+
+#setup #title {
+  font-size: 28px;
+  margin: 0px;
+}
+
+
+/* End */
 #end {
   position: fixed;
   top: 50%;
@@ -167,7 +242,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  cursor: pointer;
 }
 
 #setup.active, #end.active {
