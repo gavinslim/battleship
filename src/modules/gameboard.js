@@ -38,7 +38,7 @@ const Gameboard = () => {
     return false;
   };
 
-  const placeShip = (xPos, yPos, length, horizontal = false) => {
+  const placeShip = (name, xPos, yPos, length, horizontal = false) => {
     // Check that input coordinates don't conflict with existing ship location
     if (typeof (xPos) !== 'number' || typeof (yPos) !== 'number') {
       throw new Error('Invalid coordinates - not a number');
@@ -55,6 +55,7 @@ const Gameboard = () => {
     const ship = Ship(length);
     ship.setHorizontal(horizontal);
     ship.setCoordinate(xPos, yPos);
+    ship.setName(name);
 
     // Place ship on board
     for (let i = 0; i < length; i += 1) {
@@ -123,6 +124,8 @@ const Gameboard = () => {
 
   const checkAllShipsSunk = () => !(shipList.find((ship) => ship.isSunk() === false));
 
+  const getShipList = () => shipList;
+
   const reset = () => {
     shipList = [];
     missedList = [];
@@ -140,6 +143,7 @@ const Gameboard = () => {
     receiveAttack,
     emptyShipList,
     isShipListEmpty,
+    getShipList,
     checkAllShipsSunk,
     getMissedList,
     getHitList,

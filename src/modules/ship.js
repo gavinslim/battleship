@@ -5,6 +5,7 @@ const Ship = (length) => {
     x: null,
     y: null,
   };
+  let name = '';
 
   const hit = (location) => {
     if (location >= body.length || location < 0) {
@@ -23,6 +24,12 @@ const Ship = (length) => {
   };
 
   const display = () => ({ horizontal, body });
+
+  const setName = (inName) => {
+    name = inName;
+  };
+
+  const getName = () => name;
 
   const setCoordinate = (xPos, yPos) => {
     if (typeof (xPos) !== 'number' || typeof (yPos) !== 'number') {
@@ -44,6 +51,8 @@ const Ship = (length) => {
     hit,
     isSunk,
     display,
+    setName,
+    getName,
     setHorizontal,
     setCoordinate,
     getCoordinate,

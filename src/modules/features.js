@@ -2,7 +2,7 @@ const { Global } = require('./globals');
 const { Player } = require('./player');
 const { Gameboard } = require('./gameboard');
 
-const overlay = require('./features/overlay');
+const displayModule = require('./features/display');
 
 // Initialize Players and Gameboards
 const player = Player();
@@ -22,51 +22,25 @@ function getCubePosition(doc) {
   return results;
 }
 
+// ============
+// Result Phase
+// ============
+// Check for Winner
+function checkWinner() {
+  if (computerBoard.checkAllShipsSunk()) {
+    displayModule.displayWinPage();
+  } else if (playerBoard.checkAllShipsSunk()) {
+    displayModule.displayLossPage();
+  }
+}
+
 // ==========
 // Game Phase
 // ==========
-function displayWinPage() {
-  const message = document.querySelector('#message');
-  message.textContent = 'YOU WIN!';
-
-  overlay.displayEndOverlay();
-}
-
-function displayLossPage() {
-  const message = document.querySelector('#message');
-  message.textContent = 'YOU LOSE!';
-
-  overlay.displayEndOverlay();
-}
-
-// Refresh grid and display hit and miss results
-function refreshGrid(board, id) {
-  const missedList = board.getMissedList();
-  const hitList = board.getHitList();
-
-  missedList.forEach((miss) => {
-    const cubes = document.querySelectorAll(`div[data-key="x${miss.x}-y${miss.y}"]`);
-    cubes.forEach((cube) => {
-      if (cube.parentNode.getAttribute('id') === id) {
-        cube.classList.add('miss');
-      }
-    });
-  });
-
-  hitList.forEach((hit) => {
-    const cubes = document.querySelectorAll(`div[data-key="x${hit.x}-y${hit.y}"]`);
-    cubes.forEach((cube) => {
-      if (cube.parentNode.getAttribute('id') === id) {
-        cube.classList.add('hit');
-      }
-    });
-  });
-}
-
 // Player attack
 function playerAttack(position) {
   player.attack(computerBoard, position.x, position.y);
-  refreshGrid(computerBoard, 'computer-grid');
+  displayModule.refreshGrid(computerBoard, 'computer-grid');
 }
 
 // Computer attack
@@ -77,16 +51,7 @@ function computerAttack() {
   } else if (computer.randomAttack(playerBoard)) {
     smartMove = true;
   }
-  refreshGrid(playerBoard, 'player-grid');
-}
-
-// Check for Winner
-function checkWinner() {
-  if (computerBoard.checkAllShipsSunk()) {
-    displayWinPage();
-  } else if (playerBoard.checkAllShipsSunk()) {
-    displayLossPage();
-  }
+  displayModule.refreshGrid(playerBoard, 'player-grid');
 }
 
 // Attack round
@@ -96,10 +61,12 @@ function attackRound() {
 
   // Player's turn
   playerAttack(position);
+  displayModule.refreshShipStatus(computerBoard, 'Computer');
 
   // Computer's turn with delay
   setTimeout(() => {
     computerAttack();
+    displayModule.refreshShipStatus(playerBoard, 'Player');
     checkWinner();
   }, global.delay);
 }
@@ -208,6 +175,7 @@ function placeShips() {
 
   // Place ship on Player and Computer board
   playerBoard.placeShip(
+    currentShip.name,
     position.x,
     position.y,
     currentShip.length,
@@ -217,12 +185,16 @@ function placeShips() {
   // Place ship on Computer board randomly
   const randPosition = genRandomPosition(currentShip);
   computerBoard.placeShip(
+    currentShip.name,
     randPosition.x,
     randPosition.y,
     currentShip.length,
     randPosition.horizontal,
   );
 
+  displayModule.refreshShipStatus(computerBoard, 'Computer');
+  displayModule.refreshShipStatus(playerBoard, 'Player');
+  displayModule.refreshShipStatus(playerBoard, 'Setup');
   console.log(randPosition.x, randPosition.y);
 
   // Remove current ship
@@ -230,7 +202,7 @@ function placeShips() {
 
   // Remove UI once all Player ships are placed
   if (global.shipyard.length === 0) {
-    overlay.removeSetupOverlay();
+    displayModule.removeSetupOverlay();
   }
 }
 
@@ -274,17 +246,25 @@ function clearGrid(id) {
 function activateResetBtn() {
   const reset = document.querySelector('#reset-btn');
   reset.addEventListener('click', () => {
+    // Clear grids
     clearGrid('setup-grid');
     clearGrid('computer-grid');
     clearGrid('player-grid');
-    global.resetShipYard();
 
+    // Reset variables
+    global.resetShipYard();
     playerBoard.reset();
     computerBoard.reset();
     smartMove = false;
 
-    overlay.removeEndOverlay();
-    overlay.displaySetupOverlay();
+    // Refresh visuals
+    displayModule.resetShipStatus('Setup');
+    displayModule.refreshShipStatus(computerBoard, 'Computer');
+    displayModule.refreshShipStatus(playerBoard, 'Player');
+    displayModule.refreshShipStatus(playerBoard, 'Setup');
+
+    displayModule.removeEndOverlay();
+    displayModule.displaySetupOverlay();
   });
 }
 

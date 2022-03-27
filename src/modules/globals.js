@@ -9,26 +9,27 @@ const Global = () => {
 
   // Ships to be placed on Player's board
   const shipyard = [
-    { length: ship.destroyer, horizontal: true },
-    { length: ship.submarine, horizontal: true },
-    { length: ship.cruiser, horizontal: true },
-    { length: ship.battleship, horizontal: true },
-    { length: ship.carrier, horizontal: true },
+    { name: 'destroyer', length: ship.destroyer, horizontal: true },
+    { name: 'submarine', length: ship.submarine, horizontal: true },
+    { name: 'cruiser', length: ship.cruiser, horizontal: true },
+    { name: 'battleship', length: ship.battleship, horizontal: true },
+    { name: 'carrier', length: ship.carrier, horizontal: true },
   ];
 
   const boardSize = 14;
 
   const resetShipYard = () => {
     shipyard.push(
-      { length: ship.destroyer, horizontal: true },
-      { length: ship.submarine, horizontal: true },
-      { length: ship.cruiser, horizontal: true },
-      { length: ship.battleship, horizontal: true },
-      { length: ship.carrier, horizontal: true },
+      { name: 'destroyer', length: ship.destroyer, horizontal: true },
+      { name: 'submarine', length: ship.submarine, horizontal: true },
+      { name: 'cruiser', length: ship.cruiser, horizontal: true },
+      { name: 'battleship', length: ship.battleship, horizontal: true },
+      { name: 'carrier', length: ship.carrier, horizontal: true },
     );
   };
 
-  const delay = 300;
+  // Computer delay in ms
+  const delay = 0;
 
   return {
     ship,
