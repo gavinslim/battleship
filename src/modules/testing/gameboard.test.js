@@ -15,13 +15,13 @@ describe('Placing ships', () => {
   const board = Gameboard();
 
   test('Placing ship', () => {
-    expect(board.placeShip(1, 2, ship.submarine)).toBe(true);
+    expect(board.placeShip('submarine', 1, 2, ship.submarine)).toBe(true);
   });
 });
 
 describe('Receiving Attacks', () => {
   const board = Gameboard();
-  board.placeShip(0, 0, ship.battleship);
+  board.placeShip('battleship', 0, 0, ship.battleship);
 
   test('Attack miss', () => {
     expect(board.receiveAttack(10, 10)).toBe(false);
@@ -50,7 +50,7 @@ describe('Receiving Attacks', () => {
 
 describe('Check conflict for horizontal ship', () => {
   const board = Gameboard();
-  board.placeShip(10, 10, ship.cruiser, true);
+  board.placeShip('cruiser', 10, 10, ship.cruiser, true);
 
   test('Check conflicts around cruiser', () => {
     expect(board.isConflict(10, 10, ship.cruiser, true)).toBe(true);
@@ -64,7 +64,7 @@ describe('Check conflict for horizontal ship', () => {
 
 describe('Check conflict for vertical ship', () => {
   const board = Gameboard();
-  board.placeShip(10, 10, ship.cruiser, false);
+  board.placeShip('cruiser', 10, 10, ship.cruiser, false);
 
   test('Check conflicts around cruiser 1', () => {
     expect(board.isConflict(10, 10, ship.cruiser, true)).toBe(true);
@@ -80,8 +80,8 @@ describe('Check conflict for vertical ship', () => {
 
 describe('Check if all ships sunk', () => {
   const board = Gameboard();
-  board.placeShip(0, 0, ship.battleship, false);
-  board.placeShip(5, 5, ship.destroyer, false);
+  board.placeShip('battleship', 0, 0, ship.battleship, false);
+  board.placeShip('destroyer', 5, 5, ship.destroyer, false);
 
   test('Check if ships sunk', () => {
     expect(board.checkAllShipsSunk()).toBe(false);

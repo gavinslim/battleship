@@ -1,9 +1,6 @@
 /* eslint-disable no-undef */
 const { Player } = require('../player');
 const { Gameboard } = require('../gameboard');
-const { Global } = require('../globals');
-
-const { boardSize } = Global();
 
 const ship = {
   carrier: 5,
@@ -17,7 +14,7 @@ describe('Attack Group', () => {
   const p1 = Player();
   const board2 = Gameboard();
 
-  board2.placeShip(0, 0, ship.destroyer);
+  board2.placeShip('destroyer', 0, 0, ship.destroyer);
 
   test('Miss', () => {
     expect(p1.attack(board2, 10, 10)).toBe(false);
@@ -43,8 +40,8 @@ describe('Attack Group Randomly', () => {
   const board1 = Gameboard();
   const board2 = Gameboard();
 
-  board1.placeShip(0, 0, ship.destroyer);
-  board2.placeShip(0, 0, ship.destroyer);
+  board1.placeShip('destroyer', 0, 0, ship.destroyer);
+  board2.placeShip('destroyer', 0, 0, ship.destroyer);
 
   test('Random Attack 1', () => {
     expect(p1.randomAttack(board2)).toBe(false);
