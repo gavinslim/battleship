@@ -41,7 +41,6 @@ body {
 #header #title {
   color: var(--blue);
   position: absolute;
-  /* bottom: 0px; */
 }
 
 #main {

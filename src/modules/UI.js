@@ -162,7 +162,8 @@ function loadStartPage() {
   content.appendChild(setup);
   addRotateButton();
 }
-// Ending overlay for announcing winner
+
+// Result overlay for announcing winner
 function loadEndPage() {
   // Overlay
   const overlay = document.createElement('div');
@@ -176,10 +177,9 @@ function loadEndPage() {
   // Ending message in result element
   const message = document.createElement('div');
   message.setAttribute('id', 'message');
-  message.textContent = 'YOU WIN!';
   end.appendChild(message);
 
-  // Rotating button
+  // Reset button
   const button = document.createElement('button');
   button.classList.add('button');
   button.setAttribute('id', 'reset-btn');
