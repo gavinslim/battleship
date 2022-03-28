@@ -29,3 +29,5 @@ Implementation of the classic Battleship game with the purpose of using Test Dri
 
 4. Produce the distribution files:<br>```npm run build```
 
+5. Run Jest test:<br>```npm run test-watch```
+
