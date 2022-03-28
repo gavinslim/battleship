@@ -3,6 +3,7 @@
   --background-grey: #ededed;
   --background-color: rgba(255, 255, 255, 0);
   --blue: #377bb3;
+  --red: #E92B2B;
   --grid-size: 20;
   --cube-size: 28px;
 }
@@ -31,7 +32,7 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 70px;
-  height: 125px;
+  height: 150px;
   font-weight: bold;
   letter-spacing: 0.1em;
   margin: 0px;
@@ -40,7 +41,7 @@ body {
 #header #title {
   color: var(--blue);
   position: absolute;
-  bottom: 0px;
+  /* bottom: 0px; */
 }
 
 #main {
@@ -107,8 +108,8 @@ body {
 }
 
 .cube.hit {
-  background-color: red;
-  box-shadow:0 0 0 1px red;
+  background-color: var(--red);
+  box-shadow:0 0 0 1px var(--red);
   z-index: 2;
 }
 
@@ -201,7 +202,7 @@ body {
 }
 
 .ship .fa-circle-xmark {
-  color: red;
+  color: var(--red);
   position: relative;
   right: 16px;
   visibility: hidden;
